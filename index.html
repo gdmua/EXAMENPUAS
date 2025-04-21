@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-       /* Body */
+        /* Body */
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
@@ -260,28 +260,77 @@ input[type="radio"]:checked + label.red {
     animation: pulse 1.5s infinite ease-in-out;
 }
 
+/* Modal de aceptación de términos */
+#modalCondiciones {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#modalCondiciones .contenido {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    text-align: center;
+}
+
+#modalCondiciones button {
+    margin: 10px;
+    padding: 10px 20px;
+}
     </style>
 </head>
 <body>
+
+    <!-- Modal de aceptación de condiciones -->
+    <div id="modalCondiciones">
+        <div class="contenido">
+            <h2>Términos y Condiciones</h2>
+            <div style="text-align: left;">
+                <p>El examen tiene una duración de 40 minutos.</p>
+                <p>La cámara y el micrófono deben de estar activados durante toda la prueba.</p>
+                <p>En caso de no poder activar la cámara y el micrófono no se le permitirá realizar el examen.</p>
+                <p>Durante la presentación del examen el usuario será grabado por el aplicativo TEAMS, y no podra suspender la camara y el micrófono. Este registro se guardara por temas de aplicación legal.</p>
+                <p>Durante la presentación del examen, el usuario no podra salir de la pantalla del examen ya que esta acción desencadenara que el sistema le anule automaticamente la presentación del mismo.</p>
+                <p>Al termino del examen el usuario que aprobo y se le genero el documento en PDF, deberá enviar una copia del mismo al CHAT del aplicativo TEAMS, como evidencia del registro legal..</p>
+            
+            </div>
+                <button onclick="aceptarCondiciones()">Acepto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo flotante -->
     <div class="logo-container">
         <img src="https://www.aeroermo.com/home/wp-content/uploads/2022/07/Logo-Aeronautica-Civil.jpg" alt="Logo" class="logo">
     </div>
 
+    <!-- Temporizador -->
     <div id="timer">Tiempo restante: <span id="contador">40:00</span></div>
+
+    <!-- Contenedor del formulario -->
     <div class="container">
         <header>
             <h1>Grupo Drones y Movilidad Urbana Aérea</h1>
             <p>Secretaría de Autoridad Aeronáutica</p>
         </header>
 
-        <!-- Eliminamos la sección de la clave -->
+        <!-- Sección de datos del estudiante -->
         <div id="datosEstudiante" class="section active">
             <div class="form-group">
                 <label for="nombre">Nombre Completo</label>
                 <input type="text" id="nombre" placeholder="Escriba su nombre completo">
             </div>
             <div class="form-group">
-                <label for="documento">Número de Documento y Ciudad de expedición</label>
+                <label for="documento">Número de Documento</label>
                 <input type="text" id="documento" placeholder="Escriba su número de documento">
             </div>
 
@@ -289,17 +338,16 @@ input[type="radio"]:checked + label.red {
                 <label for="correo">Correo electrónico</label>
                 <input type="text" id="correo" placeholder="Escriba su correo">
             </div>
-            
-
             <button onclick="iniciarExamen()">Comenzar Examen</button>
         </div>
 
+        <!-- Sección de examen -->
         <div id="examen" class="section">
-            <form id="formularioExamen">
-            </form>
+            <form id="formularioExamen"></form>
             <button onclick="mostrarResultados()">Finalizar Examen</button>
         </div>
 
+        <!-- Resultados del examen -->
         <div id="resultados" class="section">
             <div class="results-box">
                 <h2>Resultados examen de conocimientos teóricos PUAS</h2>
@@ -308,17 +356,27 @@ input[type="radio"]:checked + label.red {
                 <p><strong>Respuestas Correctas:</strong> <span id="resultCorrectas"></span> de <span id="totalPreguntas"></span></p>
                 <p><strong>Puntaje:</strong> <span id="resultPuntaje"></span>%</p>
                 <p><strong>Fecha y Hora:</strong> <span id="fechaHora"></span></p>
-                
             </div>
         </div>
+    </div>
 
     <script>
         const fechaActual = new Date();
         const fechaHoraFormateada = fechaActual.toLocaleString();
         document.getElementById('fechaHora').textContent = fechaHoraFormateada;
-    </script>
 
-    <script>
+        // Funciones para el modal de aceptación de términos
+        function aceptarCondiciones() {
+            document.getElementById('modalCondiciones').style.display = 'none';
+            document.getElementById('datosEstudiante').classList.add('active');
+        }
+
+        function cancelar() {
+            alert("No puedes continuar sin aceptar los términos.");
+            window.location.reload(); // Redirige o recarga la página si no aceptan
+        }
+
+        // Funciones para controlar la visibilidad de las secciones
         function iniciarExamen() {
             document.getElementById('datosEstudiante').classList.remove('active');
             document.getElementById('examen').classList.add('active');
@@ -329,6 +387,7 @@ input[type="radio"]:checked + label.red {
             document.getElementById('resultados').classList.add('active');
         }
     </script>
+
 </body>
 </html>
 
@@ -358,7 +417,8 @@ input[type="radio"]:checked + label.red {
 
 
     const preguntas = {
-       derechoAereo: [
+       
+        derechoAereo: [
                
                { pregunta: "La seguridad operacional en el espacio aéreo y la seguridad de las personas en tierra y su privacidad, son aspectos relevantes que se tienen en cuenta para el establecimiento de las Normas para aeronaves no tripuladas a nivel mundial.  Este postulado es: ", opciones: ["Verdadero", "Falso",], respuesta: 0 },
                { pregunta: "¿Qué requisitos son básicos y se requiere cumplir para volar un UAS en el espacio aéreo de un país?", opciones: ["Ningún permiso ni licencia, ya que son no tripulados.", "Un registro del UAS y el cumplimiento de las regulaciones específicas.", "Sólo se pueden operar en áreas deshabitadas, sin regulaciones adicionales."], respuesta: 1 },
@@ -807,8 +867,10 @@ input[type="radio"]:checked + label.red {
    
    
                 ]
-        
 
+
+
+    
 };
 
 
@@ -981,20 +1043,15 @@ function mostrarResultados() {
         return;
     }
 
-    
-
-    
     Array.from(preguntas).forEach((preguntaCard, index) => {
         const selectedOption = preguntaCard.querySelector('input[type="radio"]:checked');
         const correctAnswer = preguntasSeleccionadas[index].respuesta;
 
-        
         const opciones = preguntaCard.querySelectorAll('input');
         opciones.forEach(opcion => {
             opcion.disabled = true;  
         });
 
-        
         if (selectedOption) {
             if (parseInt(selectedOption.value) === correctAnswer) {
                 respuestasCorrectas++;
@@ -1008,6 +1065,8 @@ function mostrarResultados() {
     });
 
     puntajeTotal = Math.round((respuestasCorrectas / preguntasSeleccionadas.length) * 100);
+    const porcentaje = (respuestasCorrectas / preguntasSeleccionadas.length) * 100;
+
 
     function generarCertificado() {
     const { jsPDF } = window.jspdf;
@@ -1147,18 +1206,18 @@ examAreas.slice(0, maxRows).forEach(row => {
     // Resultados finales (fuera del cuadro)
     yStart += 3;
     doc.text("Total Preguntas: 50", 30, yStart);
-    doc.text(`Aciertos totales: ${puntajeTotal} Sobre 50`, 140, yStart, { align: 'left' });
+    doc.text(`Aciertos totales: ${puntajeTotal} Sobre 100`, 140, yStart, { align: 'left' });
     yStart += 3;
    
-// Disminuir el valor de yStart para subir el texto
+
 doc.text(`Código de Verificación: ${codigoVerificacion}`, 105, yStart + 5, null, null, 'center');
 
 
-    // Firma
+    
     const firmaURL = "https://i.imgur.com/eUhFp45.png"; 
     doc.addImage(firmaURL, 'PNG', 77, yStart + 40, 50, 40, undefined, 'FAST');  
 
-    doc.setFontSize(11);  // Fuente de tamaño 11
+    doc.setFontSize(11);  
     doc.text("Mario Fernando Rodriguez Montoya", 105, yStart + 80, null, null, 'center');
     doc.text("Coordinador Grupo Drones y Movilidad Urbana Aérea", 60, yStart + 85); 
     doc.text("Inspector de Seguridad Operacional", 74, yStart + 90);  
@@ -1187,8 +1246,9 @@ mostrarResultados = () => {
     if (respuestasCorrectas > 38) {
         generarCertificado();
     } else {
-        alert("No se ha alcanzado el puntaje mínimo requerido (76%). No se generará el certificado. Para poder volver a presentar el examen debe cancelar los derechos.");
+        alert(`No se ha alcanzado el puntaje mínimo requerido (76%). Tu puntaje fue ${porcentaje.toFixed()}%. No se generará el certificado. Para poder volver a presentar el examen debe cancelar los derechos.`);
     }
+   
 };
 
 
@@ -1196,4 +1256,6 @@ mostrarResultados = () => {
 }
 
 </script>
+
+
 
